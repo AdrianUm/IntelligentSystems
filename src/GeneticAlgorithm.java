@@ -24,6 +24,8 @@ public class GeneticAlgorithm {
             }
         }
 
+        // COMEME LA POLLA POR DEBAJO DEL CULO
+
         showSudoku(sudokuVisual);
 
         System.out.println("-----------------------------------------");
