@@ -9,6 +9,8 @@ public class GeneticAlgorithm {
 
     private static List<Integer> limitRanges = new ArrayList<>();
 
+    static final double mutateRate = 0.05;
+
     public static void main(String[] args) {
         //int [] initialSudoku = ExampleQQWing.computePuzzleByDifficulty(Difficulty.INTERMEDIATE);
         QQWing qq = new QQWing();
@@ -49,14 +51,14 @@ public class GeneticAlgorithm {
             listOfIndividuals.add(auxPermutation);
         }
 
-        Comparator<int[]> valueComparator = new Comparator<int[]>() {
+        /*Comparator<int[]> valueComparator = new Comparator<int[]>() {
             @Override
             public int compare(int[] array1, int[] array2) {
                 // Comparar los valores asociados de los arrays
                 return Integer.compare(fitness(array2,initialSudoku), fitness(array1,initialSudoku));
             }
         };
-        //listOfIndividuals.sort(valueComparator);
+        listOfIndividuals.sort(valueComparator);*/
 
         /* THIS IS AUXILIAR IN ORDER TO SHOW THE DIFFERENT INDIVIDUALS AND THEIR FITNESS ... */
         for (int i = 0; i < listOfIndividuals.size(); i++) {
@@ -111,12 +113,51 @@ public class GeneticAlgorithm {
             }
         }
 
+        if (!encontrado) {
+            mutationGroup(aux,initialSudoku);
+        }
+
         listOfIndividuals = aux;
+    }
+
+    private static void mutationGroup (List<int[]> aux, int[] initialSudoku) {
+        Random alea = new Random();
+        for (int i = 0; i < aux.size(); i++) {
+            double r = alea.nextDouble();
+            if (r <= mutateRate) {
+                mutation(aux.get(i));
+            }
+        }
+    }
+
+    private static void mutation(int[] aux) {
+        Random alea = new Random();
+        int rndLimit = alea.nextInt(9);
+        int limtInf, limitSup;
+        if (rndLimit == 0) {
+            limtInf = 0;
+            limitSup = limitRanges.get(0);
+        } else if (rndLimit == 8) {
+            limtInf = limitRanges.get(rndLimit-1);
+            limitSup = aux.length - 1;
+        } else {
+            limtInf = limitRanges.get(rndLimit - 1);
+            limitSup = limitRanges.get(rndLimit);
+        }
+        int rnd1 = alea.nextInt(limtInf,limitSup);
+        int rnd2 = alea.nextInt(limtInf,limitSup);
+        while (rnd1 == rnd2) {
+            rnd2 = alea.nextInt(limtInf,limitSup);
+        }
+
+        int auxx = aux[rnd1];
+        aux[rnd1] = aux[rnd2];
+        aux[rnd2] = auxx;
     }
 
     private static void crossover (List<int[]> aux, int i, int j) {
         Random alea = new Random();
-        int rndCrosIndex = alea.nextInt(aux.size());
+        int rndCrosIndex = alea.nextInt(limitRanges.size());
         int CLimit = limitRanges.get(rndCrosIndex);
 
         int [] fAux = aux.get(i).clone();
@@ -133,6 +174,11 @@ public class GeneticAlgorithm {
             first[w] = sAux[w];
             second[w] = fAux[w];
         }
+
+        aux.remove(j);
+        aux.remove(i);
+        aux.add(first);
+        aux.add(second);
     }
 
     private static int fitness(int[] individual, int[] initialSudoku) {
