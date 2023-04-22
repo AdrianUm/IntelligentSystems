@@ -7,6 +7,8 @@ public class GeneticAlgorithm {
 
     static final int TAM = 9;
 
+    private static List<Integer> limitRanges = new ArrayList<>();
+
     public static void main(String[] args) {
         //int [] initialSudoku = ExampleQQWing.computePuzzleByDifficulty(Difficulty.INTERMEDIATE);
         QQWing qq = new QQWing();
@@ -24,8 +26,6 @@ public class GeneticAlgorithm {
             }
         }
 
-        // COMEME LA POLLA POR DEBAJO DEL CULO
-
         showSudoku(sudokuVisual);
 
         System.out.println("-----------------------------------------");
@@ -34,6 +34,15 @@ public class GeneticAlgorithm {
 
         int [] initialPopulation = generateInitialIndividual(initialSudoku);
         listOfIndividuals.add(initialPopulation);
+
+        System.out.println("SIZE OF RANGES LIST: " + limitRanges.size() + " CONTENT: ");
+
+        for (int j = 0; j < limitRanges.size(); j++) {
+            System.out.print(limitRanges.get(j) + " ");
+        }
+
+        System.out.println();
+        System.out.println();
 
         for (int x = 1; x <= 99; x++) {
             int [] auxPermutation = permute(initialPopulation,initialSudoku);
@@ -47,7 +56,7 @@ public class GeneticAlgorithm {
                 return Integer.compare(fitness(array2,initialSudoku), fitness(array1,initialSudoku));
             }
         };
-        listOfIndividuals.sort(valueComparator);
+        //listOfIndividuals.sort(valueComparator);
 
         /* THIS IS AUXILIAR IN ORDER TO SHOW THE DIFFERENT INDIVIDUALS AND THEIR FITNESS ... */
         for (int i = 0; i < listOfIndividuals.size(); i++) {
@@ -63,18 +72,18 @@ public class GeneticAlgorithm {
         boolean encontrado = false;
 
 
-        while(!encontrado){
+        while(!encontrado) {
             newPopulation(encontrado,listOfIndividuals,initialSudoku);
         }
 
         int [] aux = listOfIndividuals.get(0);
-        System.out.println("Solucion encontrada:");
+        System.out.println("Solucion encontrada: ");
         for (int i = 0; i < aux.length; i++) {
             System.out.print(aux[i] + " ");
         }
     }
 
-    private static void newPopulation(boolean encontrado, List<int[]> listOfIndividuals, int[] initialSudoku) {
+    private static void newPopulation (boolean encontrado, List<int[]> listOfIndividuals, int[] initialSudoku) {
         List<int[]> aux = new ArrayList<>();
         int añadidos = 0;
         int cnt = 0;
@@ -90,11 +99,11 @@ public class GeneticAlgorithm {
             } else if (p >= rnd) {
                 aux.add(listOfIndividuals.get(cnt));
                 añadidos++;
-                if(añadidos % 2 ==0){
+                if(añadidos % 2 == 0) {
                     crossover(aux,añadidos-2,añadidos-1);
                 }
-
             }
+
             if (cnt + 1 == 100) {
                 cnt = 0;
             } else {
@@ -103,16 +112,27 @@ public class GeneticAlgorithm {
         }
 
         listOfIndividuals = aux;
-
-        if (encontrado) {
-            System.exit(0); // si hemos encontrado la solucion nos salimos, teniendo la solucion en el primer elemeto de la lista
-        }
-
     }
-    //inutil
 
-    private static void crossover(List<int[]> aux, int i, int i1) {
+    private static void crossover (List<int[]> aux, int i, int j) {
         Random alea = new Random();
+        int rndCrosIndex = alea.nextInt(aux.size());
+        int CLimit = limitRanges.get(rndCrosIndex);
+
+        int [] fAux = aux.get(i).clone();
+        int [] sAux = aux.get(j).clone();
+
+        int [] first = new int [fAux.length];
+        int [] second = new int [sAux.length];
+
+        for (int k = 0; k < CLimit; k++) {
+            first[k] = fAux[k];
+            second[k] = sAux[k];
+        }
+        for (int w = CLimit; w < fAux.length; w++) {
+            first[w] = sAux[w];
+            second[w] = fAux[w];
+        }
     }
 
     private static int fitness(int[] individual, int[] initialSudoku) {
@@ -177,14 +197,19 @@ public class GeneticAlgorithm {
         int tamIndividual = numberOfEmptyCells(initialSudoku);
         int [] aux = new int[tamIndividual];
         int cnt = 0;
+        int rn = 0;
         for (int k = 0; k < TAM; k++) {
             List<Integer> auxList1 = new ArrayList<>();
             for (int w = 0; w < TAM; w++) {
                 int element = initialSudoku[k * TAM + w];
                 if (element != 0) {
                     auxList1.add(element);
+                } else {
+                    ++rn;
                 }
             }
+            limitRanges.add(rn);
+
             List<Integer> auxList2 = elementsNotInRow(auxList1);
             for (int w = 0; w < TAM; w++) {
                 int element = initialSudoku[k * TAM + w];
@@ -195,6 +220,9 @@ public class GeneticAlgorithm {
                 }
             }
         }
+
+        limitRanges.remove(limitRanges.size() - 1);
+
         return aux;
     }
 
