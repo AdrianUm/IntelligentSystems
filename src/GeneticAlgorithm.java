@@ -64,24 +64,8 @@ public class GeneticAlgorithm {
 
         boolean encontrado = false;
 
-
         while(!encontrado) {
-            newPopulation(encontrado,listOfIndividuals,initialSudoku);
-            /*for (int i = 0; i < listOfIndividuals.size(); i++) {
-                int [] auX = listOfIndividuals.get(i);
-                for (int j = 0; j < auX.length; j++) {
-                    System.out.print(auX[j] + " ");
-                }
-                int f = fitness(auX,initialSudoku);
-                int p = Math.round(((100 * f) - 1800) / 144);
-                System.out.println("\nFITNESS : " + f + " Probability: " + p);
-            }
-
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();
-            System.out.println();*/
+            encontrado = newPopulation(encontrado,listOfIndividuals,initialSudoku);
         }
 
         int [] aux = listOfIndividuals.get(0);
@@ -91,17 +75,20 @@ public class GeneticAlgorithm {
         }
     }
 
-    private static void newPopulation (boolean encontrado, List<int[]> listOfIndividuals, int[] initialSudoku) {
+    private static boolean newPopulation (boolean encontrado, List<int[]> listOfIndividuals, int[] initialSudoku) {
+        boolean returnBoolean = false;
         List<int[]> aux = new ArrayList<>();
         int añadidos = 0;
         int cnt = 0;
         Random alea = new Random();
-        while (añadidos != 100 && !encontrado) {
+        while (añadidos != 100 && !returnBoolean) {
             int rnd = alea.nextInt(101);
             int f = fitness(listOfIndividuals.get(cnt),initialSudoku);
+
             int p = Math.round(((100 * f) - 1800) / 144);
             if (f == 162) {
-                encontrado = true;
+                System.out.println("HE ENCONTRADO EL FITNESS LIMITE");
+                returnBoolean = true;
                 aux.add(0,listOfIndividuals.get(cnt));
                 continue;
             } else if (p >= rnd) {
@@ -119,7 +106,7 @@ public class GeneticAlgorithm {
             }
         }
 
-        if (!encontrado) {
+        if (!returnBoolean) {
             mutationGroup(aux,initialSudoku);
         }
 
@@ -128,6 +115,7 @@ public class GeneticAlgorithm {
         for (int j = 0; j < aux.size(); j++) {
             listOfIndividuals.add(aux.get(j));
         }
+        return returnBoolean;
     }
 
     private static void mutationGroup (List<int[]> aux, int[] initialSudoku) {
