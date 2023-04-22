@@ -109,6 +109,7 @@ public class GeneticAlgorithm {
         }
 
     }
+    //inutil
 
     private static void crossover(List<int[]> aux, int i, int i1) {
         Random alea = new Random();
