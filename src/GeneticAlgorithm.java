@@ -67,7 +67,7 @@ public class GeneticAlgorithm {
 
         while(!encontrado) {
             newPopulation(encontrado,listOfIndividuals,initialSudoku);
-            for (int i = 0; i < listOfIndividuals.size(); i++) {
+            /*for (int i = 0; i < listOfIndividuals.size(); i++) {
                 int [] auX = listOfIndividuals.get(i);
                 for (int j = 0; j < auX.length; j++) {
                     System.out.print(auX[j] + " ");
@@ -76,6 +76,12 @@ public class GeneticAlgorithm {
                 int p = Math.round(((100 * f) - 1800) / 144);
                 System.out.println("\nFITNESS : " + f + " Probability: " + p);
             }
+
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();*/
         }
 
         int [] aux = listOfIndividuals.get(0);
@@ -117,7 +123,11 @@ public class GeneticAlgorithm {
             mutationGroup(aux,initialSudoku);
         }
 
-        listOfIndividuals = aux;
+        listOfIndividuals.clear();
+
+        for (int j = 0; j < aux.size(); j++) {
+            listOfIndividuals.add(aux.get(j));
+        }
     }
 
     private static void mutationGroup (List<int[]> aux, int[] initialSudoku) {
