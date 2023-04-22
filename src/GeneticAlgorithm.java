@@ -90,6 +90,10 @@ public class GeneticAlgorithm {
             } else if (p >= rnd) {
                 aux.add(listOfIndividuals.get(cnt));
                 añadidos++;
+                if(añadidos % 2 ==0){
+                    crossover(aux,añadidos-2,añadidos-1);
+                }
+
             }
             if (cnt + 1 == 100) {
                 cnt = 0;
@@ -104,6 +108,10 @@ public class GeneticAlgorithm {
             System.exit(0); // si hemos encontrado la solucion nos salimos, teniendo la solucion en el primer elemeto de la lista
         }
 
+    }
+
+    private static void crossover(List<int[]> aux, int i, int i1) {
+        Random alea = new Random();
     }
 
     private static int fitness(int[] individual, int[] initialSudoku) {
