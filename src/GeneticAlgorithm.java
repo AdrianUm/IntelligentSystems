@@ -61,21 +61,21 @@ public class GeneticAlgorithm {
         listOfIndividuals.sort(valueComparator);*/
 
         /* THIS IS AUXILIAR IN ORDER TO SHOW THE DIFFERENT INDIVIDUALS AND THEIR FITNESS ... */
-        for (int i = 0; i < listOfIndividuals.size(); i++) {
-            int [] auX = listOfIndividuals.get(i);
-            for (int j = 0; j < auX.length; j++) {
-                System.out.print(auX[j] + " ");
-            }
-            int f = fitness(auX,initialSudoku);
-            int p = Math.round(((100 * f) - 1800) / 144);
-            System.out.println("\nFITNESS : " + f + " Probability: " + p);
-        }
 
         boolean encontrado = false;
 
 
         while(!encontrado) {
             newPopulation(encontrado,listOfIndividuals,initialSudoku);
+            for (int i = 0; i < listOfIndividuals.size(); i++) {
+                int [] auX = listOfIndividuals.get(i);
+                for (int j = 0; j < auX.length; j++) {
+                    System.out.print(auX[j] + " ");
+                }
+                int f = fitness(auX,initialSudoku);
+                int p = Math.round(((100 * f) - 1800) / 144);
+                System.out.println("\nFITNESS : " + f + " Probability: " + p);
+            }
         }
 
         int [] aux = listOfIndividuals.get(0);
