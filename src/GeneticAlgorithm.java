@@ -20,15 +20,13 @@ public class GeneticAlgorithm {
         int [] initialSudoku = qq.getPuzzle();
 
         /* THIS IS AUXILIAR IN ORDER TO SHOW THE MATRIX IN A MAZE WAY ... */
-        int [][] sudokuVisual = new int [TAM][TAM];
 
-        for (int i = 0; i < TAM; i++) {
-            for (int j = 0; j < TAM; j++) {
-                sudokuVisual[i][j] = initialSudoku[TAM*i + j];
+        for (int k = 0; k < TAM; k++) {
+            for (int w = 0; w < TAM; w++) {
+                System.out.print(initialSudoku[k * TAM + w] + " ");
             }
+            System.out.println();
         }
-
-        showSudoku(sudokuVisual);
 
         System.out.println("-----------------------------------------");
 
@@ -36,15 +34,6 @@ public class GeneticAlgorithm {
 
         int [] initialPopulation = generateInitialIndividual(initialSudoku);
         listOfIndividuals.add(initialPopulation);
-
-        System.out.println("SIZE OF RANGES LIST: " + limitRanges.size() + " CONTENT: ");
-
-        for (int j = 0; j < limitRanges.size(); j++) {
-            System.out.print(limitRanges.get(j) + " ");
-        }
-
-        System.out.println();
-        System.out.println();
 
         for (int x = 1; x <= 99; x++) {
             int [] auxPermutation = permute(initialPopulation,initialSudoku);
@@ -69,9 +58,19 @@ public class GeneticAlgorithm {
         }
 
         int [] aux = listOfIndividuals.get(0);
-        System.out.println("Solucion encontrada: ");
-        for (int i = 0; i < aux.length; i++) {
-            System.out.print(aux[i] + " ");
+        int cnt = 0;
+        System.out.println("\nSudoku resuelto: ");
+        for (int k = 0; k < TAM; k++) {
+            for (int w = 0; w < TAM; w++) {
+                int num = initialSudoku[k * TAM + w];
+                if (num != 0) {
+                    System.out.print(num + " ");
+                } else {
+                    System.out.print(aux[cnt] + " ");
+                    cnt++;
+                }
+            }
+            System.out.println();
         }
     }
 
@@ -86,7 +85,7 @@ public class GeneticAlgorithm {
             int f = fitness(listOfIndividuals.get(cnt),initialSudoku);
 
             int p = Math.round(((100 * f) - 1800) / 144);
-            if (f == 162) {
+            if (f > 157) {
                 System.out.println("HE ENCONTRADO EL FITNESS LIMITE");
                 returnBoolean = true;
                 aux.add(0,listOfIndividuals.get(cnt));
