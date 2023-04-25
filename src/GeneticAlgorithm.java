@@ -1,3 +1,4 @@
+import com.qqwing.Difficulty;
 import com.qqwing.QQWing;
 
 import java.util.*;
@@ -9,10 +10,12 @@ public class GeneticAlgorithm {
 
     private static List<Integer> limitRanges = new ArrayList<>();
 
-    static final double mutateRate = 0.05;
+    static double mutateRate = 0.08;
+
+    static final int numIndividuals = 100;
 
     public static void main(String[] args) {
-        //int [] initialSudoku = ExampleQQWing.computePuzzleByDifficulty(Difficulty.INTERMEDIATE);
+        //int [] initialSudoku = ExampleQQWing.computePuzzleByDifficulty(Difficulty.SIMPLE);
         QQWing qq = new QQWing();
         qq.setRecordHistory(true);
         qq.setLogHistory(false);
@@ -35,19 +38,10 @@ public class GeneticAlgorithm {
         int [] initialPopulation = generateInitialIndividual(initialSudoku);
         listOfIndividuals.add(initialPopulation);
 
-        for (int x = 1; x <= 99; x++) {
+        for (int x = 1; x <= (numIndividuals - 1); x++) {
             int [] auxPermutation = permute(initialPopulation,initialSudoku);
             listOfIndividuals.add(auxPermutation);
         }
-
-        /*Comparator<int[]> valueComparator = new Comparator<int[]>() {
-            @Override
-            public int compare(int[] array1, int[] array2) {
-                // Comparar los valores asociados de los arrays
-                return Integer.compare(fitness(array2,initialSudoku), fitness(array1,initialSudoku));
-            }
-        };
-        listOfIndividuals.sort(valueComparator);*/
 
         /* THIS IS AUXILIAR IN ORDER TO SHOW THE DIFFERENT INDIVIDUALS AND THEIR FITNESS ... */
 
@@ -59,7 +53,7 @@ public class GeneticAlgorithm {
 
         int [] aux = listOfIndividuals.get(0);
         int cnt = 0;
-        System.out.println("\nSudoku resuelto: ");
+        System.out.println("Sudoku resuelto: ");
         for (int k = 0; k < TAM; k++) {
             for (int w = 0; w < TAM; w++) {
                 int num = initialSudoku[k * TAM + w];
@@ -80,25 +74,24 @@ public class GeneticAlgorithm {
         int añadidos = 0;
         int cnt = 0;
         Random alea = new Random();
-        while (añadidos != 100 && !returnBoolean) {
+        while (añadidos != numIndividuals && !returnBoolean) {
             int rnd = alea.nextInt(101);
             int f = fitness(listOfIndividuals.get(cnt),initialSudoku);
 
             int p = Math.round(((100 * f) - 1800) / 144);
-            if (f > 157) {
-                System.out.println("HE ENCONTRADO EL FITNESS LIMITE");
+            if (f == 162) {
                 returnBoolean = true;
                 aux.add(0,listOfIndividuals.get(cnt));
                 continue;
             } else if (p >= rnd) {
                 aux.add(listOfIndividuals.get(cnt));
                 añadidos++;
-                if(añadidos % 2 == 0) {
+                if (añadidos % 2 == 0) {
                     crossover(aux,añadidos-2,añadidos-1);
                 }
             }
 
-            if (cnt + 1 == 100) {
+            if (cnt + 1 == numIndividuals) {
                 cnt = 0;
             } else {
                 cnt++;
@@ -136,7 +129,7 @@ public class GeneticAlgorithm {
             limitSup = limitRanges.get(0);
         } else if (rndLimit == 8) {
             limtInf = limitRanges.get(rndLimit-1);
-            limitSup = aux.length - 1;
+            limitSup = aux.length;
         } else {
             limtInf = limitRanges.get(rndLimit - 1);
             limitSup = limitRanges.get(rndLimit);
