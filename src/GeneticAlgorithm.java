@@ -12,15 +12,20 @@ public class GeneticAlgorithm {
 
     static double mutateRate = 0.08;
 
-    static final int numIndividuals = 100;
+    static double crossoverRate = 0.6;
+
+    static final int numIndividuals = 100000;
+
+    static int MIN = 18;
+    static int MAX = 162;
 
     public static void main(String[] args) {
-        //int [] initialSudoku = ExampleQQWing.computePuzzleByDifficulty(Difficulty.SIMPLE);
-        QQWing qq = new QQWing();
+        int [] initialSudoku = ExampleQQWing.computePuzzleWithNHolesPerRow(6);
+        /*QQWing qq = new QQWing();
         qq.setRecordHistory(true);
         qq.setLogHistory(false);
         qq.generatePuzzle();
-        int [] initialSudoku = qq.getPuzzle();
+        int [] initialSudoku = qq.getPuzzle();*/
 
         /* THIS IS AUXILIAR IN ORDER TO SHOW THE MATRIX IN A MAZE WAY ... */
 
@@ -73,12 +78,27 @@ public class GeneticAlgorithm {
         List<int[]> aux = new ArrayList<>();
         int añadidos = 0;
         int cnt = 0;
+        int min = 162;
+        int max = 0;
         Random alea = new Random();
+        Random aleaCrossover = new Random();
         while (añadidos != numIndividuals && !returnBoolean) {
             int rnd = alea.nextInt(101);
             int f = fitness(listOfIndividuals.get(cnt),initialSudoku);
+            if(f > max) {
+                max = f;
+            }
+            if(f < min) {
+                min = f;
+            }
 
-            int p = Math.round(((100 * f) - 1800) / 144);
+            int p;
+            if (MAX == MIN) {
+                p = 100;
+            } else {
+                mutateRate = 0.08;
+                p = Math.round(((100 * f) - MIN*100) / (MAX-MIN));
+            }
             if (f == 162) {
                 returnBoolean = true;
                 aux.add(0,listOfIndividuals.get(cnt));
@@ -87,7 +107,10 @@ public class GeneticAlgorithm {
                 aux.add(listOfIndividuals.get(cnt));
                 añadidos++;
                 if (añadidos % 2 == 0) {
-                    crossover(aux,añadidos-2,añadidos-1);
+                    double auxRndCrossover = aleaCrossover.nextDouble();
+                    if (auxRndCrossover <= crossoverRate) {
+                        crossover(aux,añadidos-2,añadidos-1);
+                    }
                 }
             }
 
@@ -107,6 +130,10 @@ public class GeneticAlgorithm {
         for (int j = 0; j < aux.size(); j++) {
             listOfIndividuals.add(aux.get(j));
         }
+
+        MAX = max;
+        MIN = min;
+
         return returnBoolean;
     }
 
