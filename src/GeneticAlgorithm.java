@@ -20,7 +20,7 @@ public class GeneticAlgorithm {
     static int MAX = 162;
 
     public static void main(String[] args) {
-        int [] initialSudoku = ExampleQQWing.computePuzzleWithNHolesPerRow(6);
+        int [] initialSudoku = ExampleQQWing.computePuzzleWithNHolesPerRow(9);
         /*QQWing qq = new QQWing();
         qq.setRecordHistory(true);
         qq.setLogHistory(false);
@@ -133,6 +133,10 @@ public class GeneticAlgorithm {
 
         MAX = max;
         MIN = min;
+        System.out.println("Min: " + MIN);
+        System.out.println();
+        System.out.println("Max: " + MAX);
+        System.out.println();
 
         return returnBoolean;
     }
